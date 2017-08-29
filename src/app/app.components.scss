@@ -1,0 +1,33 @@
+.oneLine {
+  white-space: nowrap;
+  font-size:small;
+}
+.row {
+  margin-top:0;
+  width:80%;
+  margin:0 auto;
+}
+div[class*="col-"] {
+  background: #e3f8ff;
+  text-align: center;
+  border: 1px solid black;
+  height: 45px;
+
+}
+
+/* Mixin */
+@mixin vertical-align($position: relative) {
+  position: $position;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.element p {
+@include vertical-align();
+}
+.element button {
+  @include vertical-align();
+}
+
