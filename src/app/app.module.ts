@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import {WebSocketService} from 'angular2-websocket-service';
 import {ServerSocketService} from './server-socket.service';
-
+import {StompService} from 'ng2-stomp-service';
 @NgModule({
   declarations: [
     AppComponent
@@ -12,7 +12,7 @@ import {ServerSocketService} from './server-socket.service';
   imports: [
     BrowserModule
   ],
-  providers: [WebSocketService, ServerSocketService],
+  providers: [WebSocketService, ServerSocketService, StompService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
