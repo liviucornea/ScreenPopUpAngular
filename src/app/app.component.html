@@ -24,10 +24,19 @@
 
     </div>
     <div class="col-md-3 oneLine element">
-      <button class="btn btn-primary btn-sm" style="float:left" (click)="sendMessage()">Login</button>
+      <button class="btn btn-primary btn-sm" style="float:left">Login</button>
       <button class="btn btn-primary btn-sm" style="float:none">Logout</button>
     </div>
 
   </div>
 
 </div>
+<div class="row">
+  <div class="col-md-2 oneLine element">
+    <input type="text" #wsMessage > </div>
+  <div class="col-md-2 oneLine element">
+  <button class="btn btn-primary btn-sm" style="float:left" (click)="sendMessage(wsMessage.value)">Send to WS</button>
+  </div>
+</div>
+
+<div><span> Message from WebSocketd is : <strong>{{wsResponse}}</strong> </span></div>

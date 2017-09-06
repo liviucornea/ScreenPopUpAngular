@@ -1,10 +1,9 @@
 import {Component, OnDestroy} from '@angular/core';
 import {Subscription} from 'rxjs/Subscription'
-import {ServerSocketService} from './server-socket.service';
-import {StompService} from 'ng2-stomp-service';
-
 import * as SockJS from 'sockjs-client';
 const Stomp = require('stompjs/lib/stomp').Stomp;
+
+// import * as Stomp from 'stompjs/lib/stomp';
 
 
 @Component({
@@ -18,17 +17,17 @@ export class AppComponent implements OnDestroy {
   stationNbr = '787';
   accountNbr = '432345';
   cardNbr = '5554344';
-
+  wsResponse = '';
+  websocket: any;
   private socketSubscription: Subscription;
   private subscription: any;
  private  stompClient: any;
-  constructor(private socket: ServerSocketService, private stomp: StompService) {
-     // configuration
-
-    const socketNew = new SockJS('http://localhost:8080/websocket/gs-guide-websocket');
-    this.stompClient = Stomp.over(socketNew);
+  constructor() {
     const self = this;
-    this.stompClient.connect({}, function (frame) {
+     // configuration
+    const socketNew = new SockJS('http://localhost:8080/websocket/gs-guide-websocket');
+    self.stompClient = Stomp.over(socketNew);
+    self.stompClient.connect({}, function (frame) {
       console.log('StompClient Connected : ' + frame);
       self.stompClient.subscribe('/topic/greetings', self.response);
     }, function (err) {
@@ -50,12 +49,14 @@ export class AppComponent implements OnDestroy {
    //   this.subscription = stomp.subscribe('/topic/greetings', this.response);
     });
 */
+this.getWebSochect();
   }
 
-  sendMessage() {
+  sendMessage( message: string) {
     // send data
  //  this.stomp.send('/app/hello', {}, JSON.stringify({'name': 'Liviu Cornea'}));
-   this.stompClient.send('/app/hello', {}, JSON.stringify({'name': 'Liviu Cornea'}));
+   this.stompClient.send('/app/hello', {}, JSON.stringify({'name': message}));
+    this.websocket.send('{"name":"' + message + '"}');
   }
 
 
@@ -63,17 +64,34 @@ export class AppComponent implements OnDestroy {
     this.socketSubscription.unsubscribe();
     // unsubscribe
     this.subscription.unsubscribe();
+    this.stompClient.disconnect();
 
 
-    // disconnect
-    this.stomp.disconnect().then(() => {
-      console.log('Connection closed')
-    })
   }
 
 // response
   public response = (data) => {
-    console.log('Uite ca merge: ' + data)
+    this.wsResponse =  JSON.parse(data.body).content;
+      // console.log('Uite ca merge: ' + data)
+  }
+
+  public responsWS = (data) => {
+    this.wsResponse = JSON.parse(data).name;
+}
+
+  getWebSochect() {
+    const self = this;
+  //  ws://localhost:8080/websocket/cinemaSocket/0
+    const wsUri = 'ws://localhost:8080/websocket/cinemaSocket/5';
+    this.websocket = new WebSocket(wsUri);
+    self.websocket.onopen = function (event) {
+      self.websocket.send('Here\'s some text that the server is urgently awaiting!');
+    };
+     self.websocket.onmessage = function(evt) {// self.response(evt.data)
+      console.log('Data Received by pure websocket');
+      self.responsWS(evt.data);
+       };
+
   }
 
 }
